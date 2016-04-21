@@ -13,7 +13,7 @@ figure;
 % plot(x,'g')
 hold on;
 
-p = 4; % ??
+p = 9; % ??
 
 c = zeros(p,p);
 for i = 1:p
@@ -38,11 +38,11 @@ for i = 1:p
     end
 end
 
-z = sort(z,'descend');
+% z = sort(z,'descend');
 
 A = zmat\x(1:p)';
 
-A = sort(A,'descend');
+% A = sort(A,'descend');
 
 rx = zeros(1,NX);
 for i = 1:p
@@ -65,18 +65,28 @@ for i = 1:p
     end
     ValidLength = i;
 end
+ValidLength = p;
 
 %% re-construction by prony
-ztmp = zeros(1, NX);
 rxPRONY = zeros(1, NX);
-for i = 1:ValidLength
-    for j = 1:NX
-        ztmp(j) = A(i)*z(i)^j;
+error = zeros(1,NX);
+for i = 1:NX
+    rxTmp = 0;
+    for j = 1:ValidLength
+        rxTmp = rxTmp + A(j)*z(j)^i;
+        
     end
-    rxPRONY = rxPRONY + ztmp;
+   
+    error(i) = rxTmp - x(i);
+    rxPRONY(i) = real(rxTmp);
 end
 
-plot(abs(rxPRONY));
+% subplot(211)
+plot(x);
+hold on;
+% subplot(212)
+plot(rxPRONY,'r');hold on;
+plot(rxPRONY - x(1:NX), ':');
 
 
 

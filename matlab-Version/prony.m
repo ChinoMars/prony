@@ -30,11 +30,9 @@ for i = 1:p
         zmat(i,j) = z(j)^i;
     end
 end
-z = sort(z, 'descend');
 
 %% get A, the Amplitude of prony expression
 A = zmat\x(1:p)';
-A = sort(A, 'descend');
 
 %% re-construction by AR module
 rxAR = zeros(1, NX);
@@ -46,24 +44,16 @@ for i = p+1:NX
 end
 
 %% get Valid Length of prony parameters, too small parameters will be abandoned
-maxer = abs(A(1));
-for i = 1:p
-    if sum(abs(A(i:p))) < maxer*0.005
-        ValidLength = i;
-        break;
-    end
-    ValidLength = i;
-end
+% maxer = abs(A(1));
+% for i = 1:p
+%     if sum(abs(A(i:p))) < maxer*0.005
+%         ValidLength = i;
+%         break;
+%     end
+%     ValidLength = i;
+% end
 
-%% re-construction by prony
-ztmp = zeros(1, NX);
-rxPRONY = zeros(1, NX);
-for i = 1:ValidLength
-    for j = 1:NX
-        ztmp(j) = z(j)^j;
-    end
-    rxPRONY = rxPRONY + ztmp;
-end
+ValidLength = p;
 
 
 %% get alpha_i and omega_i
@@ -81,4 +71,16 @@ pronyParam.A = A;
 pronyParam.alpha = ai;
 pronyParam.omega = oi;
 
+%% When to reconstruct the x wave, we should follow this steps as below:
+%reconstruct the data
+rxPRONY = zeros(1, NX);
+error = zeros(1,NX);
+for i = 1:NX
+    rxTmp = 0;
+    for j = 1:ValidLength
+        rxTmp = rxTmp + A(j)*z(j)^i; 
+    end
+    error(i) = rxTmp - x(i);
+    rxPRONY(i) = real(rxTmp);
+end
 
