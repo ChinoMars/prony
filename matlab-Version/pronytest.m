@@ -13,7 +13,7 @@ figure;
 % plot(x,'g')
 hold on;
 
-p = 9; % ??
+p = 4; % ??
 
 c = zeros(p,p);
 for i = 1:p
@@ -34,7 +34,7 @@ z = roots(a);
 zmat = zeros(p,p);
 for i = 1:p
     for j = 1:p
-        zmat(i,j) = z(j)^i;
+        zmat(i,j) = real(z(j)^i);
     end
 end
 

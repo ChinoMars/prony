@@ -3,6 +3,7 @@ package com.chinomars.prony;
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 import android.util.Log;
+import android.widget.CompoundButton;
 
 /**
  * Created by Chino on 4/11/16.
@@ -18,15 +19,15 @@ public class Prony {
         int len = var1.length;
         double result = 0;
         for (int i = 0; i < len; ++i) {
-			result += var1[i] * var2[i];	
-		}
+            result += var1[i] * var2[i];    
+        }
 
-		return result;
+        return result;
     }
 
     /**
      * Calculate the C matrix in Marple Algorithm of AR analysis module
-	 * i = 0:p; j = 0:p;
+     * i = 0:p; j = 0:p;
      */
     public double[][] CalcCMat(double[] x, int p) {
         double[][] cMat = new double[p][p];
@@ -35,28 +36,28 @@ public class Prony {
             for (int j = 0; j < p; ++j) {
                 double[] vecTmp1 = new double[N-p];
                 System.arraycopy(x, p-i-1, vecTmp1, 0, N-p);
-				double[] vecTmp2 = new double[N-p];
-				System.arraycopy(x, p-j-1, vecTmp2, 0, N-p);
-				cMat[i][j] = DotTimes(vecTmp1, vecTmp2);
+                double[] vecTmp2 = new double[N-p];
+                System.arraycopy(x, p-j-1, vecTmp2, 0, N-p);
+                cMat[i][j] = DotTimes(vecTmp1, vecTmp2);
 
-				System.arraycopy(x, i, vecTmp1, 0, N-p);
-				System.arraycopy(x, j, vecTmp2, 0, N-p);
+                System.arraycopy(x, i, vecTmp1, 0, N-p);
+                System.arraycopy(x, j, vecTmp2, 0, N-p);
 
-				cMat[i][j] += DotTimes(vecTmp1, vecTmp2);
+                cMat[i][j] += DotTimes(vecTmp1, vecTmp2);
             }
         }
 
         return cMat;
     }
-	
-	/**
-	 * Marple algorithm to calculate a_i
-	 */
-	public Matrix Marple(double[] x, int p) {
-		double[][] cMat = CalcCMat(x, p);
+    
+    /**
+     * Marple algorithm to calculate a_i
+     */
+    public Matrix Marple(double[] x, int p) {
+        double[][] cMat = CalcCMat(x, p);
         Matrix C = new Matrix(cMat);
 
-		double[][] cP = new double[p][1];
+        double[][] cP = new double[p][1];
         int N = x.length;
         for (int i = 0; i < p; ++i) {
             double[] vecTmp1 = new double[N-p];
@@ -88,11 +89,12 @@ public class Prony {
 //
 //        return res;
 
-	}
+    }
 
     /**
-     *  Solve the Polynomials
-     *
+     * solve the poly
+     * @param a
+     * @return
      */
     public EigenvalueDecomposition NRoots(double[] a) {
         int len = a.length - 1;
@@ -117,22 +119,21 @@ public class Prony {
     }
 
     /**
-     * Calculate Prony Parameters: a_i, z_i, A, ValidLength
-     *
+     * complex pow
+     * @param c
+     * @param i
+     * @return c^i
      */
+    public Complex mPow(Complex c, int i) {
+        Complex result = null;
+        for (int j = 0; j < i; ++j) {
+            result = c.times(c);
+        }
 
-    /**
-     *  Calculate z_i in Prony Module
-     */
-    public EigenvalueDecomposition CalcZMat(double[] x, int p) {
-        Matrix aMat = Marple(x, p);
-        if (aMat.getColumnDimension() != 1) return null;
-
-        double[] a = aMat.getColumnPackedCopy();
-
-
+        return result;
     }
 
+    public Matrix
 
 
 
