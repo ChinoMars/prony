@@ -61,7 +61,7 @@ ai = zeros(1,p);
 oi = zeros(1,p);
 for i = 1:p
     ai(i) = real(log(z(i)))*fs;
-    oi(i) = image(log(z(i)))*fs;
+    oi(i) = imag(log(z(i)))*fs;
 end
 
 %% return a struct
